@@ -4,8 +4,6 @@
 namespace App;
 
 
-use Illuminate\Support\Facades\Log;
-
 class WeatherData
 {
     const MILES_QOEF = 2.23694;
@@ -45,6 +43,10 @@ class WeatherData
         return $retArray;
     }
 
+    /**
+     * @param string $key
+     * @return string
+     */
     private function processField(string $key): string
     {
         $keys = explode('/', $key);
@@ -62,37 +64,41 @@ class WeatherData
         }
     }
 
+    /**
+     * Main weather information
+     *
+     * @param string $key
+     * @return string
+     */
     private function formatMainWeather(string $key): string
     {
-        return (isset($this->weatherData[$key]) ? implode(', ', $this->weatherData[$key][0]) : 'NA');
+        if (isset($this->weatherData[$key])){
+            $data = $this->weatherData[$key][0];
+            return $data['main'] . ': ' . $data['description'] . ' ' . '<img src="http://openweathermap.org/img/wn/'.$data['icon'].'@2x.png" width="25px" height="20px">';
+        }
+
+        return 'NA';
     }
 
+    /**
+     * Basic weather information
+     *
+     * @param string $key
+     * @return string
+     */
     private function formatBasicInfo(string $key): string
     {
         return (isset($this->weatherData['main'][$key]) ? $this->weatherData['main'][$key] : 'NA');
     }
 
+    /**
+     * Convert speed from m/s to mph
+     *
+     * @param float $metres
+     * @return float
+     */
     private function convertToMph(float $metres): float
     {
-        return $metres * self::MILES_QOEF;
-    }
-
-    public static function exportUkCities()
-    {
-        $retArray = [];
-        $jsonData = json_decode(file_get_contents(storage_path() . '/city.list.json'), true);
-        if ($jsonData !== false) {
-            foreach ($jsonData as $data) {
-                if(isset($data['country'])
-                    && isset($data['name'])
-                    && $data['country'] === 'GB'
-                ){
-                    $retArray[] = $data['name'];
-                }
-            }
-        }
-
-        echo json_encode($retArray);
-        dd('done');
+        return round($metres * self::MILES_QOEF, 2);
     }
 }

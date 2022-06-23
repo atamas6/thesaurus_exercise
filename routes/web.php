@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
-Route::get('/weather/{city}', [WeatherController::class, 'getWeather']);
+Route::post('/weather', [WeatherController::class, 'getWeather']);
