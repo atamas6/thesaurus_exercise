@@ -6,6 +6,10 @@
 
         <title>Laravel</title>
 
+        @foreach ($data as $val)
+            <p>Data: {{ $val['label'] }} - {{ $val['content'] }}</p>
+        @endforeach
+
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
